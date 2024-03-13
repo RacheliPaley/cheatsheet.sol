@@ -8,24 +8,26 @@ pragma solidity >=0.7.0 <0.9.0;
  */
 contract Ballot {
 
+//Voter stores information about a voter, includ:   weight,  status,  index of the voted proposal.
     struct Voter {
         uint weight; // weight is accumulated by delegation
         bool voted;  // if true, that person already voted
         address delegate; // person delegated to
         uint vote;   // index of the voted proposal
     }
-
+//Proposal stores information about a proposal,  name, number of accumulated votes.
     struct Proposal {
         // If you can limit the length to a certain number of bytes,
         // always use one of bytes1 to bytes32 because they are much cheaper
         bytes32 name;   // short name (up to 32 bytes)
         uint voteCount; // number of accumulated votes
     }
-
+//this adress is for the chairperson 
     address public chairperson;
 
-    mapping(address => Voter) public voters;
 
+    mapping(address => Voter) public voters;
+//array of suggest;
     Proposal[] public proposals;
 
     /**
@@ -51,6 +53,7 @@ contract Ballot {
      * @dev Give 'voter' the right to vote on this ballot. May only be called by 'chairperson'.
      * @param voter address of voter
      */
+//this funcion gives the option to vote - only the chairperson can call it;
     function giveRightToVote(address voter) public {
         require(
             msg.sender == chairperson,
@@ -68,6 +71,7 @@ contract Ballot {
      * @dev Delegate your vote to the voter 'to'.
      * @param to address to which vote is delegated
      */
+// this function  allows to  the voter to freeze his vote and move it to onother chooser.
     function delegate(address to) public {
         Voter storage sender = voters[msg.sender];
         require(!sender.voted, "You already voted.");
